@@ -1,9 +1,11 @@
 #include "Scale.h"
 #include "Arduino.h"
+#include "AnalogSmooth.h"
 
-Scale::Scale(int sckPin, int dtPin, float calibrationFactor, int smoothingWindow) {
-	this->_sckPin = sckPin;
+Scale::Scale(int dtPin, int sckPin, float calibrationFactor,
+		int smoothingWindow) {
 	this->_dtPin = dtPin;
+	this->_sckPin = sckPin;
 	this->_calibrationFactor = calibrationFactor;
 	this->_smoothingWindow = smoothingWindow;
 	this->_raw = 0.f;
@@ -20,7 +22,7 @@ void Scale::init() {
 
 	_smoother = AnalogSmooth(_smoothingWindow);
 
-	if(_debug){
+	if (_debug) {
 		Serial.print("Initialized Scale on _dtPin: ");
 		Serial.print(_dtPin);
 		Serial.print(", _sckPin: ");
@@ -32,32 +34,37 @@ void Scale::init() {
 	}
 }
 
-void Scale::read() {
-	_raw = _scale.get_units(10);
+void Scale::_read() {
+	_raw = _scale.get_units(1);
 	_smooth = _smoother.smooth(_raw);
+	if(_debug){
+		Serial.print("raw: ");
+		Serial.print(_raw);
+		Serial.print(", \t smooth: ");
+		Serial.print(_smooth);
+		Serial.println();
+	}
 }
 
-void Scale::calibrate() {
-	Serial.println("Calibration started");
-	_scale.set_scale();
-	_scale.tare(25);
-	Serial.println("Place object on scale");
-	while(_raw < 10000) {
-		read();
-		delay(100);
-	}
-
-	Serial.println("Weighing...");
-	float objectWeight = _scale.get_units(100);
-
-	Serial.println(String(objectWeight));
-	Serial.println("remove object");
-	while(_raw > 100) {
-		read();
-		delay(100);
-	}
-
-	_scale.set_scale(_calibrationFactor);
-	Serial.println("Calibration finished");
+float Scale::read() {
+	_read();
+	return _smooth;
 }
 
+float Scale::readRaw() {
+	_read();
+	return _raw;
+}
+
+void Scale::tare(int times) {
+	_scale.tare(times);
+
+	// Warmup the smoother
+	for(int i = 0; i < _smoothingWindow; i++) {
+		_read();
+	}
+}
+
+HX711 Scale::getHX711() {
+	return _scale;
+}

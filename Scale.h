@@ -7,11 +7,13 @@
 class Scale
 {
 	public:
-		Scale(int sckPin, int dtPin, float calibrationFactor, int smoothingWindow);
+		Scale(int dtPin, int sckPin, float calibrationFactor, int smoothingWindow);
 		void debug();
 		void init();
-		void read();
-		void calibrate();
+		float read();
+		float readRaw();
+		void tare(int times);
+		HX711 getHX711();
 
 	private:
 		bool _debug = false;
@@ -19,5 +21,6 @@ class Scale
 		float _calibrationFactor, _raw, _smooth;
 		HX711 _scale;
 		AnalogSmooth _smoother;
+		void _read();
 };
 #endif
