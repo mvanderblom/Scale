@@ -12,38 +12,31 @@ Scale::Scale(int dtPin, int sckPin, float calibrationFactor,
 	this->_smooth = 0.f;
 }
 
-void Scale::debug() {
-	this->_debug = true;
-}
-
 void Scale::init() {
 	_scale.begin(_dtPin, _sckPin);
 	_scale.set_scale(_calibrationFactor);
 
 	_smoother = AnalogSmooth(_smoothingWindow);
 
-	if (_debug) {
-		Serial.print("Initialized Scale on _dtPin: ");
-		Serial.print(_dtPin);
-		Serial.print(", _sckPin: ");
-		Serial.print(_sckPin);
-		Serial.print(", _calibrationFactor: ");
-		Serial.print(_calibrationFactor);
-		Serial.print(", _smoothingWindow: ");
-		Serial.println(_smoothingWindow);
-	}
+//	Serial.print("Initialized Scale on _dtPin: ");
+//	Serial.print(_dtPin);
+//	Serial.print(", _sckPin: ");
+//	Serial.print(_sckPin);
+//	Serial.print(", _calibrationFactor: ");
+//	Serial.print(_calibrationFactor);
+//	Serial.print(", _smoothingWindow: ");
+//	Serial.println(_smoothingWindow);
 }
 
 void Scale::_read() {
 	_raw = _scale.get_units(1);
 	_smooth = _smoother.smooth(_raw);
-	if(_debug){
-		Serial.print("raw: ");
-		Serial.print(_raw);
-		Serial.print(", \t smooth: ");
-		Serial.print(_smooth);
-		Serial.println();
-	}
+
+//	Serial.print("raw: ");
+//	Serial.print(_raw);
+//	Serial.print(", \t smooth: ");
+//	Serial.print(_smooth);
+//	Serial.println();
 }
 
 float Scale::read() {
