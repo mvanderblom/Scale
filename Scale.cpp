@@ -1,6 +1,6 @@
-#include "Scale.h"
-#include "Arduino.h"
-#include "AnalogSmooth.h"
+#include <Scale.h>
+#include <Arduino.h>
+#include <AnalogSmooth.h>
 
 Scale::Scale(int dtPin, int sckPin, float calibrationFactor,
 		int smoothingWindow) {
