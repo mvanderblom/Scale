@@ -12,6 +12,7 @@ class Scale
 		float read();
 		float readRaw();
 		void tare(int times);
+		void setCalibrationFactor(float calibrationFactor);
 		HX711 getHX711();
 
 	private:

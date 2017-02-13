@@ -58,6 +58,11 @@ void Scale::tare(int times) {
 	}
 }
 
+void Scale::setCalibrationFactor(float calibrationFactor) {
+	_calibrationFactor = calibrationFactor;
+	_scale.set_scale(_calibrationFactor);
+}
+
 HX711 Scale::getHX711() {
 	return _scale;
 }
